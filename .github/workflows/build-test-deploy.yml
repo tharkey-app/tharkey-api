@@ -1,0 +1,36 @@
+name: Go
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.18
+
+    - name: Build
+      run: go build -v ./...
+
+    - name: Test
+      run: go test -v ./...
+      
+    - name: Docker Login
+      uses: docker/login-action@v2.0.0
+      if: github.event_name != 'pull_request'
+      with:
+        # Server address of Docker registry. If not set then will default to Docker Hub
+        registry: rg.fr-par.scw.cloud/tharkey-app
+        # Username used to log against the Docker registry
+        username: github-action
+        # Password or personal access token used to log against the Docker registry
+        password: ${{ secrets.SCW_RG_TOKEN }}
