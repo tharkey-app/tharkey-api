@@ -18,8 +18,11 @@ func main() {
 	log.Println("Starting")
 
 	router := mux.NewRouter()
-	router.Path("/api/version").Handler(versionHandler)
-	router.Use(loggingMiddleware, handlers.CompressHandler, handlers.RecoveryHandler())
+	router.Methods(http.MethodGet).Path("/_ready").HandlerFunc(readyHandler)
+	router.Methods(http.MethodGet).Path("/_live").HandlerFunc(liveHandler)
+	apiRouter := router.PathPrefix("/api").Subrouter()
+	apiRouter.Path("/version").Handler(versionHandler)
+	apiRouter.Use(loggingMiddleware, handlers.CompressHandler, handlers.RecoveryHandler())
 
 	srv := http.Server{
 		Addr:         ":8080",
@@ -48,4 +51,12 @@ func main() {
 	}
 
 	log.Println("Exited")
+}
+
+func readyHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+}
+
+func liveHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
 }

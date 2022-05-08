@@ -1,4 +1,4 @@
-FROM golang:alpine AS builder
+FROM docker.io/golang:alpine AS builder
 RUN apk update && \
     apk add --no-cache git
 WORKDIR /app
