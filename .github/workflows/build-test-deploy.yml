@@ -2,7 +2,10 @@ name: Go
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - '**'
+    tags:
+      - 'v*'
   pull_request:
     branches: [ main ]
 
@@ -11,8 +14,23 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-
+    - name: Checkout
+      uses: actions/checkout@v3
+      
+    - name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        # list of Docker images to use as base name for tags
+        images: |
+          tharkey-app/tharkey-api
+          rg.fr-par.scw.cloud/tharkey-app/tharkey-api
+        # generate Docker tags based on the following events/attributes
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
@@ -37,7 +55,8 @@ jobs:
         
     - name: Docker build and push
       uses: docker/build-push-action@v3
-      if: github.event_name != 'pull_request'
       with:
-        push: true
-        tags: rg.fr-par.scw.cloud/tharkey-app/tharkey-api:latest
+        context: .
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
