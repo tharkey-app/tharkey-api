@@ -34,3 +34,10 @@ jobs:
         username: github-action
         # Password or personal access token used to log against the Docker registry
         password: ${{ secrets.SCW_RG_TOKEN }}
+        
+    - name: Docker build and push
+      uses: docker/build-push-action@v3
+      if: github.event_name != 'pull_request'
+      with:
+        push: true
+        tags: rg.fr-par.scw.cloud/tharkey-app/tharkey-api:latest
