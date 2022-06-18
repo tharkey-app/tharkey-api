@@ -16,8 +16,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
       
     - name: Docker meta
       id: meta
@@ -61,15 +59,3 @@ jobs:
         push: ${{ github.event_name != 'pull_request' }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
-        
-    - name: Helm install
-      uses: azure/setup-helm@v1
-      if: github.event_name != 'pull_request'
-      
-    - name: Helm release
-      uses: helm/chart-releaser-action@v1.4.0
-      if: github.event_name != 'pull_request'
-      with:
-        charts_dir: helm
-      env:
-        CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
