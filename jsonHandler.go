@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func jsonHandler(f func(context.Context) (interface{}, error)) http.Handler {
+func jsonHandler[T any](f func(context.Context) (T, error)) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		ctx := req.Context()
 

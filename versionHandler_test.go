@@ -11,7 +11,7 @@ func TestGetVersion(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	if v == nil {
-		t.Error("missing version")
+	if v.Version != "(devel)" {
+		t.Errorf("Expecting '%s' got '%s'", "(devel)", v.Version)
 	}
 }

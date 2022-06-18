@@ -38,10 +38,22 @@ helm install tharkey-api helm
 ```
 
 ## Deploy in infra
+```shell
+# Define tag and push 
+git tag v0.1.1
+git push --tags
+
+# Wait for the github action to complete
+
+# Deploy chart
+helm upgrade tharkey-api helm --atomic --install
+```
+
+Or if you want to deploy a local version
 ```
 docker build . -t tharkey-app/tharkey-api:local
-docker tag tharkey-app/tharkey-api:local rg.fr-par.scw.cloud/tharkey-app/tharkey-api:latest
-docker push rg.fr-par.scw.cloud/tharkey-app/tharkey-api:latest
+docker tag tharkey-app/tharkey-api:local rg.fr-par.scw.cloud/tharkey-app/tharkey-api:local
+docker push rg.fr-par.scw.cloud/tharkey-app/tharkey-api:local
 
-helm upgrade tharkey-api helm --atomic --install    
+helm upgrade tharkey-api helm --atomic --install --set image.tag=local
 ```

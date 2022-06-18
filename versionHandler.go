@@ -6,16 +6,18 @@ import (
 	"runtime/debug"
 )
 
-var versionHandler = jsonHandler(getVersion)
+var versionHandler = jsonHandler[VersionResponse](getVersion)
 
-func getVersion(ctx context.Context) (interface{}, error) {
+type VersionResponse struct {
+	Version string `json:"version"`
+}
+
+func getVersion(ctx context.Context) (VersionResponse, error) {
 	info, ok := debug.ReadBuildInfo()
 	if !ok {
-		return nil, fmt.Errorf("undefined version")
+		return VersionResponse{}, fmt.Errorf("undefined version")
 	}
-	return struct {
-		Version string `json:"version"`
-	}{
+	return VersionResponse{
 		Version: info.Main.Version,
 	}, nil
 }
