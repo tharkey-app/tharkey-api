@@ -1,5 +1,21 @@
 # API server for the Tharkey app
 
+## Endpoints
+
+### /_ready
+Readiness probe
+
+### /_live
+Liveness probe
+
+### /api/version
+Return the current code version in JSON:
+```
+{
+  "version": "0.1.0"
+}
+```
+
 ## Local run
 ```
 go install .
